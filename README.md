@@ -3,7 +3,7 @@
 A tamper-evident Ethereum registry for fire-safety equipment inspections and fire/smoke incidents in **healthcare facilities**.
 
 **Blockchain Development — Individual Assignment | African Leadership University**
-Author: Chinmerem ([@Phinatech](https://github.com/Phinatech)) · Application area: **Healthcare**
+Author: Chinemerem Judith Ugbo  ([@Phinatech](https://github.com/Phinatech)) · Application area: **Healthcare**
 
 ---
 
