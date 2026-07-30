@@ -1,6 +1,6 @@
-# Test Cases — FireSafetyComplianceRegistry
+# Test Cases, FireSafetyComplianceRegistry
 
-All tests run with `npx hardhat test --no-compile` against Hardhat's local EVM.
+All tests run with `npx hardhat test` against Hardhat's local EVM.
 
 **Result: 74 / 74 passing. 0 failing.**
 
@@ -28,7 +28,7 @@ Contract initialises correctly and exposes the expected interfaces and constants
 
 ## Inspector management
 
-Only the regulator can authorise or withdraw inspector status, and withdrawal is forward-looking — it never rewrites history.
+Only the regulator can authorise or withdraw inspector status, and withdrawal is forward-looking and never rewrites history.
 
 | # | Test case (expected behaviour) | Result |
 |---|---|---|
@@ -162,13 +162,13 @@ Aggregate counters report accurately across all record types.
 
 ## Coverage notes
 
-- **Access control** — every role-gated function is tested from both sides: an authorised caller succeeding and an unauthorised caller reverting with the specific expected error.
-- **Facility scoping** — tests confirm that holding FACILITY_MANAGER_ROLE is not by itself sufficient; a manager at one facility cannot act on another.
-- **Referential integrity** — an incident naming equipment is verified against that equipment actually belonging to the reporting facility, covering the cross-facility case and the nonexistent-id case.
-- **Time-dependent behaviour** — expiry is verified by advancing the chain clock past the validity window, then confirming a fresh inspection restores compliance.
-- **Input validation** — zero addresses, empty strings, and out-of-bounds validity periods each assert the specific custom error and its arguments.
-- **Soulbound property** — tested across all three transfer routes (transferFrom, safeTransferFrom, approved operator).
-- **State transitions** — facility-level compliance is walked through four distinct states rather than asserted at a single point.
+- **Access control** every role-gated function is tested from both sides: an authorised caller succeeding and an unauthorised caller reverting with the specific expected error.
+- **Facility scoping** tests confirm that holding FACILITY_MANAGER_ROLE is not by itself sufficient; a manager at one facility cannot act on another.
+- **Referential integrity** an incident naming equipment is verified against that equipment actually belonging to the reporting facility, covering the cross-facility case and the nonexistent-id case.
+- **Time-dependent behaviour** expiry is verified by advancing the chain clock past the validity window, then confirming a fresh inspection restores compliance.
+- **Input validation** zero addresses, empty strings, and out-of-bounds validity periods each assert the specific custom error and its arguments.
+- **Soulbound property** tested across all three transfer routes (transferFrom, safeTransferFrom, approved operator).
+- **State transitions** facility-level compliance is walked through four distinct states rather than asserted at a single point.
 
 ## Verified manually rather than by automated test
 
