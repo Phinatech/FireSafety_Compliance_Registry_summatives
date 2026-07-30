@@ -2,28 +2,28 @@
 
 A tamper-evident Ethereum registry for fire-safety equipment inspections and fire/smoke incidents in **healthcare facilities**.
 
-**Blockchain Development — Individual Assignment | African Leadership University**
-Author: Chinemerem Judith Ugbo  ([@Phinatech](https://github.com/Phinatech)) · Application area: **Healthcare**
+**Blockchain Development, Individual Assignment | African Leadership University**
+Author: Chinemerem Judith Ugbo · Application area: **Healthcare**
 
 ---
 
 ## The problem
 
-Hospitals, clinics, and nursing homes are legally required to keep fire-safety equipment — smoke detectors, extinguishers, sprinklers, alarm panels — inspected and certified. But those compliance records are held by the very party being regulated: on paper, in spreadsheets, or in facility-controlled software. Records can be lost, back-dated, or quietly amended after an adverse event.
+Hospitals, clinics, and nursing homes are legally required to keep fire-safety equipment (smoke detectors, extinguishers, sprinklers, alarm panels) inspected and certified. But those compliance records are held by the very party being regulated: on paper, in spreadsheets, or in facility-controlled software. Records can be lost, back-dated, or quietly amended after an adverse event.
 
 The risk lands on the occupants least able to escape it. ICU patients, patients under anaesthesia, neonates, and mobility-impaired patients cannot self-evacuate; they depend entirely on the building's detection and suppression systems working, and on staff having enough warning for assisted evacuation. When a smoke detector has silently been out of certification for eight months and the paperwork says otherwise, the people bearing that risk are the ones who can least act on it.
 
 ## The solution
 
-A Solidity smart contract that makes the compliance record itself tamper-evident. Regulators onboard facilities and authorise inspectors; inspectors submit outcomes; the contract derives compliance status automatically and issues a non-transferable certificate on each pass; facilities log incidents to an append-only history. No participant — including the regulator who deployed it — can alter or delete a submitted record.
+A Solidity smart contract that makes the compliance record itself tamper-evident. Regulators onboard facilities and authorise inspectors; inspectors submit outcomes; the contract derives compliance status automatically and issues a non-transferable certificate on each pass; facilities log incidents to an append-only history. No participant, including the regulator who deployed it, can alter or delete a submitted record.
 
 ### Why blockchain and not a database
 
-A centralised database would be cheaper and faster. What it cannot provide is the guarantee that matters here: that the record was not altered by whoever controls the database. Every stakeholder in this system has both a motive and, in a centralised design, an opportunity to revise history — a facility facing a failed inspection before a regulatory visit, an inspector who certified equipment that later failed, an insurer disputing a claim. A blockchain removes the opportunity.
+A centralised database would be cheaper and faster. What it cannot provide is the guarantee that matters here: that the record was not altered by whoever controls the database. Every stakeholder in this system has both a motive and, in a centralised design, an opportunity to revise history: a facility facing a failed inspection before a regulatory visit, an inspector who certified equipment that later failed, an insurer disputing a claim. A blockchain removes the opportunity.
 
 ### What deliberately stays off-chain
 
-Real-time smoke and fire **detection** stays in the IoT hardware and the building's local alarm panel. Ethereum's ~12-second block time and per-transaction gas cost make it unsuitable for continuous sensor telemetry or for triggering an evacuation alarm — an on-chain detection design would be slower and less reliable than the hardware it replaced.
+Real-time smoke and fire **detection** stays in the IoT hardware and the building's local alarm panel. Ethereum's ~12-second block time and per-transaction gas cost make it unsuitable for continuous sensor telemetry or for triggering an evacuation alarm; an on-chain detection design would be slower and less reliable than the hardware it replaced.
 
 Hardware detects and alarms in real time. The blockchain records verified events after the fact and derives compliance state. **The contract is the trust layer, not the control loop.**
 
@@ -33,7 +33,7 @@ Hardware detects and alarms in real time. The blockchain records verified events
 
 | Feature | Description |
 |---|---|
-| **Role-based access control** | Three roles — regulator (admin), inspector, facility manager — enforced on every state-changing function |
+| **Role-based access control** | Three roles (regulator, inspector, facility manager) enforced on every state-changing function |
 | **Facility-scoped authority** | Role membership alone is insufficient; the caller must be the manager of record for that specific facility |
 | **Immutable inspection history** | Inspections are appended, never overwritten. Failures are recorded permanently, not omitted |
 | **Derived compliance with expiry** | Compliance is computed at read time, so a lapsed certification takes effect automatically |
@@ -51,7 +51,7 @@ Hardware detects and alarms in real time. The blockchain records verified events
 - `Pausable` emergency stop
 - Input validation: zero addresses, empty strings, bounded validity periods
 - Custom errors rather than revert strings (lower deployment and revert gas)
-- Timestamps from `block.timestamp` only — submissions cannot be back-dated
+- Timestamps from `block.timestamp` only, submissions cannot be back-dated
 
 ---
 
@@ -61,18 +61,34 @@ Hardware detects and alarms in real time. The blockchain records verified events
 npm install
 cp .env.example .env        # fill in SEPOLIA_RPC_URL, PRIVATE_KEY, ETHERSCAN_API_KEY
 
-npx hardhat compile         # or: node compile-manual.js  (see note below)
-npx hardhat test --no-compile
+npx hardhat compile
+npx hardhat test
 ```
-
-> **Compiler note.** If `npx hardhat compile` fails with an error mentioning `binaries.soliditylang.org`, your network blocks Hardhat's runtime compiler download. Use `node compile-manual.js` instead — it compiles via the `solc` npm package directly and writes artifacts in Hardhat's format. Subsequent commands then need `--no-compile`.
 
 ### Deploy to Sepolia
 
 ```bash
-npx hardhat run scripts/deploy.js --network sepolia --no-compile
+npx hardhat run scripts/deploy.js --network sepolia
 npx hardhat verify --network sepolia <DEPLOYED_ADDRESS> <ADMIN_ADDRESS>
-CONTRACT_ADDRESS=<DEPLOYED_ADDRESS> npx hardhat run scripts/interact.js --network sepolia --no-compile
+CONTRACT_ADDRESS=<DEPLOYED_ADDRESS> npx hardhat run scripts/interact.js --network sepolia
+```
+
+### Live deployment
+
+This contract is deployed and source-verified on the Ethereum Sepolia testnet.
+
+| | |
+|---|---|
+| **Contract** | [`0x54748826C574c4B6f2Bc2fCB3085291425c601c8`](https://sepolia.etherscan.io/address/0x54748826C574c4B6f2Bc2fCB3085291425c601c8#code) |
+| **Admin (regulator)** | `0xcCb3eaE69cE584a60d5d8F39cF7aC9F15efA584B` |
+| **Deployment tx** | `0x790bdffba74d4fbbe1d74092e1bc05d0106fc15171da4acbe3ae8a7e0f5eac32` |
+| **Verification** | Exact Match |
+
+To reproduce the interaction run against the live contract:
+
+```bash
+CONTRACT_ADDRESS=0x54748826C574c4B6f2Bc2fCB3085291425c601c8 \
+  npx hardhat run scripts/interact.js --network sepolia
 ```
 
 Full walkthrough including faucets and manual verification: **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**
@@ -146,7 +162,6 @@ contracts/FireSafetyComplianceRegistry.sol   Main smart contract
 scripts/deploy.js                            Deployment + demo setup
 scripts/interact.js                          Post-deployment demonstration
 test/FireSafetyComplianceRegistry.test.js    74-case test suite
-compile-manual.js                            solc fallback compiler
 hardhat.config.js                            Network and compiler config
 DEPLOYMENT_GUIDE.md                          Step-by-step deployment guide
 TEST_CASES.md                                Test case documentation
@@ -156,12 +171,12 @@ TEST_CASES.md                                Test case documentation
 
 Solidity 0.8.24 · OpenZeppelin Contracts v5.6.1 · Hardhat 2.28.6 · Mocha + Chai · Ethereum Sepolia
 
-> **EVM version must be `cancun`** — OpenZeppelin v5 emits the `MCOPY` opcode. Already set in `hardhat.config.js`.
+> **EVM version must be `cancun`** OpenZeppelin v5 emits the `MCOPY` opcode. Already set in `hardhat.config.js`.
 
 ## Known limitations
 
 - **The oracle problem.** The contract guarantees a recorded inspection cannot be altered afterwards; it cannot guarantee the inspector physically visited the site. Mitigated by regulatory licensing of inspector addresses, revocation powers, and cross-referencing incidents against inspection history.
-- **Gas scales with facility size.** `isFacilityCompliant` iterates all equipment — free as an off-chain view call, expensive if called on-chain.
+- **Gas scales with facility size.** `isFacilityCompliant` iterates all equipment, free as an off-chain view call, expensive if called on-chain.
 - **Public data.** Facility names, locations, and incident descriptions are readable by anyone. Acceptable (arguably desirable) for fire safety; any extension toward patient data would need a different privacy design.
 
 ## License
