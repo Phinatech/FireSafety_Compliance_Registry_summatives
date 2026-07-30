@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
  * @title  FireSafetyComplianceRegistry
- * @author Chinmerem (GitHub: Phinatech) — African Leadership University
+ * @author Chinemerem Judith Ugbo, African Leadership University
  * @notice Tamper-evident registry of fire-safety equipment inspections and fire/smoke
  *         incidents for healthcare facilities (hospitals, clinics, nursing homes).
  *
